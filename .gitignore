@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 # ignore.pyc files
-template_matching.pyc
-detection.pyc
+*.pyc
