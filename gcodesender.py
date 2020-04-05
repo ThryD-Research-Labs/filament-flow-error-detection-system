@@ -14,11 +14,12 @@ def removeComment(string):
 	if (string.find(';')==-1):
 		return string
 	else:
+		print(string[:string.index(';')])
 		return string[:string.index(';')]
  
 def initialize():
 	# Open serial port
-	#s = serial.Serial('/dev/ttyACM0',115200)
+	#s = serial.Serial('/dev/ttyACM0',115200)	
 	s = serial.Serial(args.port,115200)
 	print('Opening Serial Port')
 	
@@ -53,16 +54,30 @@ def task(f, s):
 			print('Paused')
 			response = int(input())
 			if response == 3:
-				# s.close()
-				# s = serial.Serial('/dev/ttyUSB0', 115200)
-				# time.sleep(2)
-				command = raw_input('Enter the manual Gcode: ')
-				command = command.strip()
-				if(command.isspace()==False and len(command)>0):
-					print('Sending ' + command)
-					s.write(command + '\n')
-					grbl_out = s.readline()
-					print(' : ' + grbl_out.strip())
+				decision = 'y'
+				while decision == 'y':
+					command = raw_input('Enter the manual Gcode: ')
+					command_file = open('command.gcode', 'w+')
+					command_file.write(command)
+					print('Writing gcode')
+					command_file = open('command.gcode', 'r')
+					print('Opening gcode file')
+					# for code_number, code_line in enumerate(command_file):
+					command = command_file.readline()
+					command = removeComment(command)
+					command = command.strip()
+					if(command.isspace()==False and len(command)>0):
+						print('Sending ' + command)
+						s.write(command + '\n')
+						grbl_out = s.readline()
+						print(' : ' + grbl_out.strip())
+
+					decision = raw_input('Do you want to send another gcode? (y/n)')
+					if decision in ['y', 'n']:
+						if decision == 'n':
+							response = 1
+					command_file.close()
+
 			elif response == 4:
 				print('Resumed')
 				response = 1
@@ -83,7 +98,7 @@ if __name__ == '__main__':
 	# show values ##
 	print ("USB Port: %s"%(args.port))
 	print ("Gcode file: %s"%(args.file))
-	print ("Image gile: %s"%(args.input))
+	print ("Image file: %s"%(args.input))
 
 	gcode_file, s = initialize()
 	
