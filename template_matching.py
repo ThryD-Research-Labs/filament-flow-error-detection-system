@@ -12,7 +12,7 @@ class FilamentDetector():
     """ 
     This FilamentDetector class uses Template matching and Structural Similarity Index Measure to classify
     extruder with filament flow and extruder with filament clogged or exhausted images. The template image is matched
-    with the input frame image and finds the closely resembling match (i.e.) extruder (ROI - Region of Interest).
+    with the input frame image and identifies the closely resembling match (i.e.) extruder (ROI - Region of Interest).
     Further the ROI and template is checked for SSIM to classification with specific threshold value of (< 0).
     """   
 
